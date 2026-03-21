@@ -1,3 +1,5 @@
+## 노는곳
+
 # import cv2 as cv
 
 # img_gray = cv.imread("resource1.jpg", cv.IMREAD_COLOR)

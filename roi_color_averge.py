@@ -1,3 +1,6 @@
+# 파일 선택 후 roi 지정
+# roi 픽셀 평균값 출력
+
 import cv2 as cv
 import numpy as np
 import tkinter as tk

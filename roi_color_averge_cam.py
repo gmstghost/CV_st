@@ -1,3 +1,5 @@
+# 카메라 화면에서 roi 선택 후 roi 픽셀 평균값 출력
+
 import cv2 as cv
 import numpy as np
 

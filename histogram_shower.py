@@ -1,3 +1,5 @@
+# 이미지 히스토그램 뷰어
+
 import cv2
 import numpy as np
 import tkinter as tk
