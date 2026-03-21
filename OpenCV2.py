@@ -3,10 +3,10 @@ import numpy as np
 from matplotlib import pyplot as plt
 import time
 
-# src = cv2.imread('resource2.jpg')
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
-# src = cv2.imread('shape.png')
-# src = cv2.imread('torso1.png')
+# src = cv2.imread('img\resource2.jpg')
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\shape.png')
+# src = cv2.imread('img\torso1.png')
 
 # # 3.1 직선 밎 사각형 그리기
 
@@ -412,7 +412,7 @@ import time
 # # 관심 영역과 ROI
 # # 4.6 ROI에 의한 블록 평균 영상
 
-# src = cv2.imread('resoure3.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resoure3.jpg', cv2.IMREAD_GRAYSCALE)
 # dst = np.zeros(src.shape, dtype=src.dtype)
 
 # N = 64
@@ -456,7 +456,7 @@ import time
 
 # # 4.8 마우스로 다중 ROI 영역 지정: cv2.selectROIs()
 
-# src = cv2.imread('resource2.jpg')
+# src = cv2.imread('img\resource2.jpg')
 # rects = cv2.selectROIs('src', src, False, True)
 # print('rects = ', rects)
 
@@ -473,7 +473,7 @@ import time
 
 # # 4.9 영상 복사 1
 
-# src = cv2.imread('resource2.jpg')
+# src = cv2.imread('img\resource2.jpg')
 
 # dst = src.copy()
 # dst[100:400,200:300] = 0
@@ -489,7 +489,7 @@ import time
 
 # # 4.10 영상 복사 2
 
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 # shape = src.shape[0], src.shape[1], 3
 # dst = np.zeros(shape, dtype=np.uint8)
 
@@ -512,7 +512,7 @@ import time
 # # 4. 영상 채널 분리 및 병합
 # # 4.11 채널 분리
 
-# src = cv2.imread('rgb.jpg')
+# src = cv2.imread('img\rgb.jpg')
 # dst = cv2.split(src)
 # print(type(dst))
 # print(type(dst)[0])
@@ -530,7 +530,7 @@ import time
 
 # # 4.12 채널 병합
 
-# src = cv2.imread('resource2.jpg')
+# src = cv2.imread('img\resource2.jpg')
 # b,g,r = cv2.split(src)
 
 # # RGB 분리
@@ -558,7 +558,7 @@ import time
 # # 5. 컬러 공간변환
 # # 4.13 컬러 변환
 
-# src = cv2.imread('resource3.jpg')
+# src = cv2.imread('img\resource3.jpg')
 
 # gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)
 # yCrCv = cv2.cvtColor(src,cv2.COLOR_BGR2YCrCb)
@@ -577,7 +577,7 @@ import time
 # # 6. 영상의 크기 변환과 회전
 # # 4.14 영상 크기 변환
 
-# src = cv2.imread('resource3.jpg')
+# src = cv2.imread('img\resource3.jpg')
 
 # dst = cv2.resize(src, dsize=(320,240))
 # dst2  = cv2.resize(src, dsize=(0,0), fx=1.5, fy=1.5)
@@ -593,7 +593,7 @@ import time
 
 # # 4.15 cv2.rotate() 영상 회전
 
-# src = cv2.imread('resource3.jpg')
+# src = cv2.imread('img\resource3.jpg')
 
 # dst1 = cv2.rotate(src, cv2.ROTATE_90_CLOCKWISE)
 # dst2 = cv2.rotate(src, cv2.ROTATE_90_COUNTERCLOCKWISE)
@@ -624,7 +624,7 @@ import time
 
 # # 4.16 영상 어파인 변환 (확대/축소, 회전)
 
-# src = cv2.imread('resource2.jpg')
+# src = cv2.imread('img\resource2.jpg')
 
 # rows, cols, channels = src.shape
 # M1 = cv2.getRotationMatrix2D((rows/2,cols/2),45,0.5)
@@ -723,7 +723,7 @@ import time
 # # 8. 수학 및 통계 함수
 # # 4.20 cv2.normalize()에 의한 영상 정규화
 
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 
 # minVal, maxVal, minLoc, masLoc = cv2.minMaxLoc(src)
 # print('src:',minVal, maxVal, minLoc, masLoc)
@@ -916,8 +916,8 @@ import time
 
 # # 4.26 3채널 컬러 영상의 PCA 투영
 
-# #src = cv2.imread('resource2.jpg')
-# src = cv2.imread('rgb.jpg')
+# #src = cv2.imread('img\resource2.jpg')
+# src = cv2.imread('img\rgb.jpg')
 # b,g,r = cv2.split(src)      # src를 b g r 에 채널 분리
 # cv2.imshow('b',b)
 # cv2.imshow('g',g)
@@ -955,7 +955,7 @@ import time
 # # 5. 임계값과 히스토그램 처리
 # # 5.1 임계값 영상
 
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 # cv2.imshow('src', src)
 
 # ret, dst = cv2.threshold(src, 120, 255, cv2.THRESH_BINARY)      # input에 맞게 임계값 적용
@@ -974,7 +974,7 @@ import time
 
 
 # # 5.2 적응형 임계값 영상
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 # cv2.imshow('src', src)
 
 # ret, dst = cv2.threshold(src, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -1017,7 +1017,7 @@ import time
 
 
 # # 5.4 히스토그램 계산 2: 그레이스케일 영상
-# src = cv2.imread('resource2.jpg', cv2.IMREAD_GRAYSCALE)
+# src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 
 # hist1 = cv2.calcHist(images=[src],channels=[0],mask=None,
 #                      histSize=[32],ranges=[0,256])
@@ -1053,7 +1053,7 @@ import time
 
 # # 5.5 히스토그램 계산 3: 컬러 영상
 
-# src = cv2.imread('resource2.jpg')
+# src = cv2.imread('img\resource2.jpg')
 # histColor = ('b', 'g', 'r')
 # for i in range(3):
 #     hist = cv2.calcHist(images=[src],channels=[i],mask=None,
@@ -2416,20 +2416,20 @@ import time
 
 
 
-# 8.7 체스보드 패턴 코너점 검출: cv2.findChessboradCorners()
+# # 8.7 체스보드 패턴 코너점 검출: cv2.findChessboradCorners()
 
-src = cv2.imread('chess.png')
-gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
-patternSize = (14,14)       # 체스보드 패턴 내부 코너점
-found, corners = cv2.findChessboardCorners(src,patternSize)     # 14x14 코너점 검출
-print('corners.shape=',corners.shape)
+# src = cv2.imread('img\chess.png')
+# gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+# patternSize = (14,14)       # 체스보드 패턴 내부 코너점
+# found, corners = cv2.findChessboardCorners(src,patternSize)     # 14x14 코너점 검출
+# print('corners.shape=',corners.shape)
 
-term_crit = (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER,10,0.01)  # 종료조건 설정(10회반복,조기종료 임계값 0.001)
-corners2 =cv2.cornerSubPix(gray,corners,(5,5),(-1,-1),term_crit)    # centroids 부화소 수준 계산
+# term_crit = (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER,10,0.01)  # 종료조건 설정(10회반복,조기종료 임계값 0.001)
+# corners2 =cv2.cornerSubPix(gray,corners,(5,5),(-1,-1),term_crit)    # centroids 부화소 수준 계산
 
-dst = src.copy()
-cv2.drawChessboardCorners(dst,patternSize,corners2,found)   # 체스보드 코너점 그리기
+# dst = src.copy()
+# cv2.drawChessboardCorners(dst,patternSize,corners2,found)   # 체스보드 코너점 그리기
 
-cv2.imshow('dst',dst)
-cv2.waitKey()
-cv2.destroyAllWindows()
+# cv2.imshow('dst',dst)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
