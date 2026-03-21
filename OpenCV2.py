@@ -6,7 +6,7 @@ import time
 # src = cv2.imread('img\resource2.jpg')
 # src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
 # src = cv2.imread('img\shape.png')
-# src = cv2.imread('img\torso1.png')
+src = cv2.imread('img\\torso1.png')
 
 # # 3.1 직선 밎 사각형 그리기
 
@@ -2431,5 +2431,122 @@ import time
 # cv2.drawChessboardCorners(dst,patternSize,corners2,found)   # 체스보드 코너점 그리기
 
 # cv2.imshow('dst',dst)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+# # 8.8 원 패턴 중심점 검출
+
+# src = cv2.imread('img\circle_pat.png')
+# gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+# patternSize = (11,7)       # 원 개수
+# found, centers = cv2.findCirclesGrid(src, patternSize)  # 원 종심 centers에 검출
+# print('centers.shape=', centers.shape)
+
+# term_crit = (cv2.TERM_CRITERIA_EPS+cv2.TERM_CRITERIA_MAX_ITER,10,0.01)  # 종료조건 설정(10회반복,조기종료 임계값 0.001)
+# centers2 = cv2.cornerSubPix(gray,centers,(5,5),(-1,-1),term_crit)    # centroids 부화소 수준 계산
+
+# dst = src.copy()
+# cv2.drawChessboardCorners(dst,patternSize,centers2,found)   # 검출된 centers2 표시
+
+# cv2.imshow('dst',dst)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+# # 8.9 영상 모멘트: cv2.moments()
+
+# gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+# ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY)     # 이진 영상
+
+# M = cv2.moments(bImage, True)       # 영상 모멘트 계산
+# for key, value in M.items():        # 모멘트 출력
+#     print('{}={}'.format(key,value))
+
+# cx = int(M['m10']/M['m00'])         # 중심 x좌표
+# cy = int(M['m01']/M['m00'])         # 중심 y좌표
+# dst = src.copy()
+# cv2.circle(dst,(cx,cy),5,(0,0,255),2)
+
+# cv2.imshow('dst',dst)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+# # 8.10 cv2.monents() 경계선 모멘트
+
+# gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+# ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 반전 이진 영상
+
+# mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+# method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+# contours, hierarchy = cv2.findContours(bImage,mode,method)  # 윤곽선 검출
+
+# dst = src.copy()
+# cv2.drawContours(dst,contours,-1,(0,0,0),3)   # 모든 윤곽선
+
+# for cnt in contours:
+#     M = cv2.moments(cnt, True)          # 윤곽선 cnt moment를 M에 계산
+#     cx = int(M['m10']/M['m00'])         # 중심 x좌표
+#     cy = int(M['m01']/M['m00'])         # 중심 y좌표
+#     cv2.circle(dst,(cx,cy),5,(0,0,255),2)   # 좌표 표시
+
+# cv2.imshow('dst',dst)
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+# # 8.11 Hu의 불변 모멘트
+
+
+# gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+# ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY)     # 이진 영상
+
+# mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+# method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+# contours, hierarchy = cv2.findContours(bImage,mode,method)  # 윤곽선 검출
+
+# dst = src.copy()
+# cnt = contours[0]
+# cv2.drawContours(dst,[cnt],0,(0,0,0),3)   # 윤곽선 그리기
+
+# M = cv2.moments(cnt)    # 윤곽선의 경계선 모멘트
+# hu = cv2.HuMoments(M)   # Hu의 모멘트를 계산
+# print('hu.shape=',hu.shape)
+# print('hu=',hu)
+
+# angle = 45.0
+# scale = 0.2
+# cx = int(M['m10']/M['m00'])         # 중심 x좌표
+# cy = int(M['m01']/M['m00'])         # 중심 y좌표
+# center = (cx,cy)        # 중심 좌표 정의
+# t = (20,30)
+# A = cv2.getRotationMatrix2D(center,angle,scale)
+# A[:,2] += t     # Affine 변환
+# print('A=', A)
+# cnt2 = cv2.transform(cnt, A)    # 변환 윤곽선 cnt2
+# cv2.drawContours(dst,[cnt2],0,(0,255,0),2)  # 초록 윤곽선
+# cv2.imshow('dst',dst)
+
+# M2 = cv2.moments(cnt2)      # 윤곽선 cnt2의 경계선 모멘트
+# hu2 = cv2.HuMoments(M2)     # Hu의 모멘트
+# print('hu2.shape=',hu2.shape)
+# print('hu2=',hu)
+
+# diffSum = np.sum(cv2.absdiff(hu,hu2))   # 배경 차분
+# print('diffSum=',diffSum)   
+
 # cv2.waitKey()
 # cv2.destroyAllWindows()
