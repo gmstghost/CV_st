@@ -2555,50 +2555,97 @@ src = cv2.imread('img\shape.png')
 
 
 
-# 8.12 길이, 면적, 바운딩 사각형, 최소 면적 사각형, 최소 면적 원
+# # 8.12 길이, 면적, 바운딩 사각형, 최소 면적 사각형, 최소 면적 원
+
+# gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+# ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 이진 영상
+# bImage = cv2.dilate(bImage, None)
+# cv2.imshow('bImage', bImage)
+
+# mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+# method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+# contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선 검출
+# print('len(contours)=', len(contours))
+
+# maxLength = 0
+# k = 0
+# for i, cnt in enumerate(contours):
+#     perimeter = cv2.arcLength(cnt, closed=True)     # 둘레 길이
+#     if perimeter > maxLength:    # 길이 가장 긴 윤곽선 검출
+#         maxLength = perimeter
+#         k = i   # 반복횟수저장
+
+# print('maxLength=', maxLength)
+# cnt = contours[k]
+# dst2 = src.copy()
+# cv2.drawContours(dst2, [cnt], 0, (255,0,0),3)
+
+# area = cv2.contourArea(cnt)     # cnt 면적계산
+# print('area=', area)
+# x, y, width, height = cv2.boundingRect(cnt)     # 바운딩 사각형 설정
+# dst3 = dst2.copy()
+# cv2.rectangle(dst3, (x,y), (x+width, y+height), (0,0,255),2)    # 바운딩 사각형 표시
+# cv2.imshow('dst3', dst3)
+
+# rect = cv2.minAreaRect(cnt)     # cnt의 최소면적사각형
+# box = cv2.boxPoints(rect)       # rect 꼭짓점 좌표
+# box = np.int32(box)             # int32 타입의 배열로 변환
+# print('box=', box)
+# dst4 = dst2.copy()
+# cv2.drawContours(dst4, [box], 0, (0,0,255),2)   # 사각형 표시
+# cv2.imshow('dst4',dst4)
+
+# (x,y), radius = cv2.minEnclosingCircle(cnt)     # 최소면적 원
+# dst5 = dst2.copy()
+# cv2.circle(dst5, (int(x),int(y)), int(radius), (0,0,255),2)
+# cv2.imshow('dst5', dst5)
+
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+
+# 8.13 직선, 다각형, 타원 근사 및 내부 점 확인
 
 gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
 ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 이진 영상
 bImage = cv2.dilate(bImage, None)
-cv2.imshow('bImage', bImage)
 
 mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
 method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
 contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선 검출
-print('len(contours)=', len(contours))
 
-maxLength = 0
-k = 0
-for i, cnt in enumerate(contours):
-    perimeter = cv2.arcLength(cnt, closed=True)     # 둘레 길이
-    if perimeter > maxLength:    # 길이 가장 긴 윤곽선 검출
-        maxLength = perimeter
-        k = i   # 반복횟수저장
+dst = src.copy()
+cnt = contours[0]
+cv2.drawContours(dst, [cnt], 0, (255,0,0),3)   # 윤괵선 표시
 
-print('maxLength=', maxLength)
-cnt = contours[k]
-dst2 = src.copy()
-cv2.drawContours(dst2, [cnt], 0, (255,0,0),3)
+dst2 = dst.copy()
+rows, cols = dst2.shape[:2]
+[vx, vy, x, y] = cv2.fitLine(cnt, cv2.DIST_L2,0, 0.01, 0.01)    # cnt를 직선으로 근사
+y1 = int((-x*vy/vx)+y)          # x1=0, x2=col-1에서의 y1
+y2 = int(((cols-x)*vy/vx)+y)    # x1=0, x2=col-1에서의 y2
+cv2.line(dst2,(0,y1),(cols-1,y2),(0,0,255),2)   # 구한 점으로 직선 그리기
+cv2.imshow('dst2',dst2)
 
-area = cv2.contourArea(cnt)     # cnt 면적계산
-print('area=', area)
-x, y, width, height = cv2.boundingRect(cnt)     # 바운딩 사각형 설정
-dst3 = dst2.copy()
-cv2.rectangle(dst3, (x,y), (x+width, y+height), (0,0,255),2)    # 바운딩 사각형 표시
-cv2.imshow('dst3', dst3)
+ellipse = cv2.fitEllipse(cnt)   # cnt 타원에 복사
+dst3 = dst.copy()
+cv2.ellipse(dst3, ellipse, (0,0,255),2)     # dst3에 타원 생성
+cv2.imshow('dst3',dst3)
 
-rect = cv2.minAreaRect(cnt)     # cnt의 최소면적사각형
-box = cv2.boxPoints(rect)       # rect 꼭짓점 좌표
-box = np.int32(box)             # int32 타입의 배열로 변환
-print('box=', box)
-dst4 = dst2.copy()
-cv2.drawContours(dst4, [box], 0, (0,0,255),2)   # 사각형 표시
+poly = cv2.approxPolyDP(cnt, epsilon=20, closed=True)   # cnt를 다각형으로 근사
+dst4 = dst.copy()
+cv2.drawContours(dst4, [poly], 0, (0,0,255),2)      # 다각형 그리기
 cv2.imshow('dst4',dst4)
 
-(x,y), radius = cv2.minEnclosingCircle(cnt)     # 최소면적 원
-dst5 = dst2.copy()
-cv2.circle(dst5, (int(x),int(y)), int(radius), (0,0,255),2)
-cv2.imshow('dst5', dst5)
+dst5 = dst.copy()
+for y in range(rows):
+    for x in range(cols):
+        if cv2.pointPolygonTest(cnt, (x,y),False)>0:    # 점이 다각형 위에 있을 때
+            dst5[y,x] = (0,255,0)       # 다각형에 근사
+cv2.imshow('dst5',dst5)
 
 cv2.waitKey()
 cv2.destroyAllWindows()
