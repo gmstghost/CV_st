@@ -5,8 +5,8 @@ import time
 
 # src = cv2.imread('img\resource2.jpg')
 # src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
-# src = cv2.imread('img\shape.png')
-src = cv2.imread('img\\torso1.png')
+src = cv2.imread('img\shape.png')
+# src = cv2.imread('img\\torso1.png')
 
 # # 3.1 직선 밎 사각형 그리기
 
@@ -2550,3 +2550,55 @@ src = cv2.imread('img\\torso1.png')
 
 # cv2.waitKey()
 # cv2.destroyAllWindows()
+
+
+
+
+
+# 8.12 길이, 면적, 바운딩 사각형, 최소 면적 사각형, 최소 면적 원
+
+gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 이진 영상
+bImage = cv2.dilate(bImage, None)
+cv2.imshow('bImage', bImage)
+
+mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선 검출
+print('len(contours)=', len(contours))
+
+maxLength = 0
+k = 0
+for i, cnt in enumerate(contours):
+    perimeter = cv2.arcLength(cnt, closed=True)     # 둘레 길이
+    if perimeter > maxLength:    # 길이 가장 긴 윤곽선 검출
+        maxLength = perimeter
+        k = i   # 반복횟수저장
+
+print('maxLength=', maxLength)
+cnt = contours[k]
+dst2 = src.copy()
+cv2.drawContours(dst2, [cnt], 0, (255,0,0),3)
+
+area = cv2.contourArea(cnt)     # cnt 면적계산
+print('area=', area)
+x, y, width, height = cv2.boundingRect(cnt)     # 바운딩 사각형 설정
+dst3 = dst2.copy()
+cv2.rectangle(dst3, (x,y), (x+width, y+height), (0,0,255),2)    # 바운딩 사각형 표시
+cv2.imshow('dst3', dst3)
+
+rect = cv2.minAreaRect(cnt)     # cnt의 최소면적사각형
+box = cv2.boxPoints(rect)       # rect 꼭짓점 좌표
+box = np.int32(box)             # int32 타입의 배열로 변환
+print('box=', box)
+dst4 = dst2.copy()
+cv2.drawContours(dst4, [box], 0, (0,0,255),2)   # 사각형 표시
+cv2.imshow('dst4',dst4)
+
+(x,y), radius = cv2.minEnclosingCircle(cnt)     # 최소면적 원
+dst5 = dst2.copy()
+cv2.circle(dst5, (int(x),int(y)), int(radius), (0,0,255),2)
+cv2.imshow('dst5', dst5)
+
+cv2.waitKey()
+cv2.destroyAllWindows()
