@@ -51,7 +51,7 @@ def mouse_callback(event,x,y,flags,param):
         end_y = y
         step = 3
 
-cap = cv.VideoCapture(0)
+cap = cv.VideoCapture(2)
 if cap.isOpened() == False:
     print*("Failed to open camera")
     exit(-1)

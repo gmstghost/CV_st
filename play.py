@@ -257,9 +257,82 @@
 
 
 
-import cv2
-import numpy as np
-from tkinter import colorchooser
+# import cv2
+# import numpy as np
+# from tkinter import colorchooser
 
-colorpick = colorchooser.askcolor()
-print(colorpick[0])
+# colorpick = colorchooser.askcolor()
+# print(colorpick[0])
+
+
+
+import numpy as np
+import cv2
+import logging
+from tkinter import filedialog
+
+logging.basicConfig(level=logging.INFO, format="[%(levelname)s %(lineno)d] %(message)s")    # 로깅 기본설정
+
+# 0: ASUS Webcam, 1: OBS 가상 카메라
+cap = cv2.VideoCapture(1)
+cam_w = 0
+cam_h = 0
+
+hsv_val=np.array([0,0,0,0,0,0])     # HSV 최댓값 최솟값 지정
+l=np.array([])                      # 빈 배열 생성
+cnt=0
+
+cv2.namedWindow("blended")
+files = filedialog.askopenfilenames(initialdir="/",\
+                 title = "파일 열기",\
+                    filetypes = (("*.jpg","*jpg"),("*.png","png")))
+
+# 마우스 이벤트 콜백
+def mouse_event(event, x, y, _, param):
+    if event == cv2.EVENT_FLAG_LBUTTON:
+        global hsv_val, cnt     # 전역변수 선언
+
+        if cnt == 0:    # 영역 선택 첫번째일 때 리스트에 바로 추가
+            hsv_val = np.append(hsv[y,x],hsv[y,x])
+            print(hsv_val)
+        
+        tmp1=hsv_val[:3]    # 기존 최솟값 임시 저장
+        tmp2=hsv_val[3:]    # 기존 최댓값 임시 저장
+
+        if cnt !=0:     # 최대 최소 각각 선택해서 리스트에 추가
+            tmp1=np.minimum(tmp1, hsv[y,x])
+            tmp2=np.maximum(tmp2, hsv[y,x])
+            hsv_val=np.append(tmp1,tmp2)
+            print(hsv[y,x], hsv_val)
+
+        logging.info(f"MIN HSV CHANGED 2 {hsv_val[:3]}")    # HSV 최솟값 로깅
+        logging.info(f"MAX HSV CHANGED 2 {hsv_val[3:]}")    # HSV 최댓값 로깅
+        cnt += 1
+        print(cnt)
+    return
+
+while True:
+    src = cv2.imread(files[0], cv2.IMREAD_COLOR)
+    logging.debug(type(hsv_val[:3]), type(hsv_val[3:]),hsv_val[:3],hsv_val[3:])
+    dst = cv2.GaussianBlur(src, (0, 0), 5)              # 기본 화면에 강도 5의 블러 효과
+    hsv = cv2.cvtColor(dst, cv2.COLOR_BGR2HSV)          # 기본 화면의 BGR 색공간을 HSV 색공간으로 변환
+    cam_h, cam_w = dst.shape[:2]                        # 카메라 화면의 높이와 너비 추출
+
+    mask = cv2.inRange(hsv, hsv_val[:3], hsv_val[3:])   # hsv 배열에서 최소~최대 범위의 마스크
+    mask2 = np.zeros_like(dst)                          # dst와 같은 형태의 배열 복사
+    mask2[mask > 0] = [255, 0, 0]                   # mask 있을때 노란색 씌움
+    cv2.setMouseCallback("blended", mouse_event, dst)   # 마우스콜백 설정
+
+    key = cv2.waitKey(1)
+    if key == ord('r'):     # r키 누르면 초기화
+        cnt=0
+        hsv_val=np.array([0,0,0,0,0,0])     # 배열 초기화
+    elif key == ord('q'):
+        logging.info("Pressed 'Q'")
+        break
+
+    if mask.shape is not None:
+        blended = cv2.addWeighted(dst, 1.0, mask2, 0.5, 0)      # 영상 혼합
+
+    cv2.imshow("blended", blended)
+cv2.destroyAllWindows()

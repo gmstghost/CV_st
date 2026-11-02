@@ -5,7 +5,8 @@ import time
 
 # src = cv2.imread('img\resource2.jpg')
 # src = cv2.imread('img\resource2.jpg', cv2.IMREAD_GRAYSCALE)
-src = cv2.imread('img\shape.png')
+# src = cv2.imread('img\shape.png')
+src = cv2.imread('img\\20260328_115540.jpg')
 # src = cv2.imread('img\\torso1.png')
 
 # # 3.1 직선 밎 사각형 그리기
@@ -2608,44 +2609,108 @@ src = cv2.imread('img\shape.png')
 
 
 
-# 8.13 직선, 다각형, 타원 근사 및 내부 점 확인
+# # 8.13 직선, 다각형, 타원 근사 및 내부 점 확인
 
-gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
-ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 이진 영상
-bImage = cv2.dilate(bImage, None)
+# gray = cv2.cvtColor(src,cv2.COLOR_BGR2GRAY)     # 그레이스케일
+# ret, bImage = cv2.threshold(gray,128,255,cv2.THRESH_BINARY_INV)     # 이진 영상
+# bImage = cv2.dilate(bImage, None)
+
+# mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+# method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+# contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선 검출
+
+# dst = src.copy()
+# cnt = contours[0]
+# cv2.drawContours(dst, [cnt], 0, (255,0,0),3)   # 윤곽선 표시
+
+# dst2 = dst.copy()
+# rows, cols = dst2.shape[:2]
+# [vx, vy, x, y] = cv2.fitLine(cnt, cv2.DIST_L2,0, 0.01, 0.01)    # cnt를 직선으로 근사
+# y1 = int((-x*vy/vx)+y)          # x1=0, x2=col-1에서의 y1
+# y2 = int(((cols-x)*vy/vx)+y)    # x1=0, x2=col-1에서의 y2
+# cv2.line(dst2,(0,y1),(cols-1,y2),(0,0,255),2)   # 구한 점으로 직선 그리기
+# cv2.imshow('dst2',dst2)
+
+# ellipse = cv2.fitEllipse(cnt)   # cnt 타원에 복사
+# dst3 = dst.copy()
+# cv2.ellipse(dst3, ellipse, (0,0,255),2)     # dst3에 타원 생성
+# cv2.imshow('dst3',dst3)
+
+# poly = cv2.approxPolyDP(cnt, epsilon=20, closed=True)   # cnt를 다각형으로 근사
+# dst4 = dst.copy()
+# cv2.drawContours(dst4, [poly], 0, (0,0,255),2)      # 다각형 그리기
+# cv2.imshow('dst4',dst4)
+
+# dst5 = dst.copy()
+# for y in range(rows):
+#     for x in range(cols):
+#         if cv2.pointPolygonTest(cnt, (x,y),False)>0:    # 점이 다각형 위에 있을 때
+#             dst5[y,x] = (0,255,0)       # 다각형에 근사
+# cv2.imshow('dst5',dst5)
+
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+
+# # 8.14 cv2.convexHull() 볼록 껍질
+
+# hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
+# lowerb = (0,40,0)
+# upperb = (20,180,255)
+# bImage = cv2.inRange(hsv,lowerb,upperb)     # 손 영역만 검출한 이진 영상
+
+# mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
+# method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
+# contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선
+
+# dst = src.copy()
+# cnt = contours[0]
+# cv2.drawContours(dst, [cnt], 0, (255,0,0),2)   # 윤곽선 표시
+
+# dst2 = dst.copy()
+# rows, cols = dst2.shape[:2]
+# hull = cv2.convexHull(cnt)      # 볼록 껍질 계산
+# cv2.drawContours(dst2, [hull], 0, (0,0,255), 2)     # 볼록 껍질 그리기
+# cv2.imshow('dst2',dst2)
+
+# cv2.waitKey()
+# cv2.destroyAllWindows()
+
+
+
+
+
+# 8.15 cv2.convexityDefects() 볼록 결함
+
+hsv = cv2.cvtColor(src, cv2.COLOR_BGR2HSV)
+lowerb = (0,40,0)
+upperb = (20,180,255)
+bImage = cv2.inRange(hsv,lowerb,upperb)     # 손 영역만 검출한 이진 영상
 
 mode = cv2.RETR_EXTERNAL    # 가장 바깥쪽 contour만
 method = cv2.CHAIN_APPROX_SIMPLE    # 윤곽점 끝점만
-contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선 검출
+contours, hierarchy = cv2.findContours(bImage, mode, method)    # bImage 윤곽선
 
 dst = src.copy()
 cnt = contours[0]
-cv2.drawContours(dst, [cnt], 0, (255,0,0),3)   # 윤괵선 표시
+cv2.drawContours(dst, [cnt], 0, (255,0,0),2)   # 윤곽선 표시
 
 dst2 = dst.copy()
 rows, cols = dst2.shape[:2]
-[vx, vy, x, y] = cv2.fitLine(cnt, cv2.DIST_L2,0, 0.01, 0.01)    # cnt를 직선으로 근사
-y1 = int((-x*vy/vx)+y)          # x1=0, x2=col-1에서의 y1
-y2 = int(((cols-x)*vy/vx)+y)    # x1=0, x2=col-1에서의 y2
-cv2.line(dst2,(0,y1),(cols-1,y2),(0,0,255),2)   # 구한 점으로 직선 그리기
-cv2.imshow('dst2',dst2)
+hull = cv2.convexHull(cnt, returnPoints=False)
+hull_points = cnt[hull[:,0]]
+cv2.drawContours(dst2, [hull_points], 0, (255,0,255), 6)
 
-ellipse = cv2.fitEllipse(cnt)   # cnt 타원에 복사
-dst3 = dst.copy()
-cv2.ellipse(dst3, ellipse, (0,0,255),2)     # dst3에 타원 생성
-cv2.imshow('dst3',dst3)
-
-poly = cv2.approxPolyDP(cnt, epsilon=20, closed=True)   # cnt를 다각형으로 근사
-dst4 = dst.copy()
-cv2.drawContours(dst4, [poly], 0, (0,0,255),2)      # 다각형 그리기
-cv2.imshow('dst4',dst4)
-
-dst5 = dst.copy()
-for y in range(rows):
-    for x in range(cols):
-        if cv2.pointPolygonTest(cnt, (x,y),False)>0:    # 점이 다각형 위에 있을 때
-            dst5[y,x] = (0,255,0)       # 다각형에 근사
-cv2.imshow('dst5',dst5)
-
-cv2.waitKey()
-cv2.destroyAllWindows()
+T = 5
+defects = cv2.convexityDefects(cnt, hull)
+print('dsefect.shape=',defects.shape)
+for i in range(defects.shape[0]):
+    s,e,f,d = defects[i,0]
+    dist = d/256
+    start = tuple(cnt[s][0])
+    end = tuple(cnt[e][0])
+    far = tuple(cnt[f][0])
